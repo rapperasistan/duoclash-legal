@@ -70,62 +70,68 @@
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
       entry.target.classList.add('seen');
-      const demo = entry.target.dataset.demo;
-      if (demo && demos[demo]) demos[demo](entry.target);
       seen.unobserve(entry.target);
     }
   }, { threshold: 0.25 });
 
-  const demos = {
-    // The code typed in, a digit at a time.
-    code(step) {
-      const digits = $$('.digits b', step);
-      const paired = $('.paired', step);
-      const run = () => {
+  // How it works: one phone plays the three moments in turn; a step can be picked too.
+  const handset = $('[data-handset]');
+  if (handset) {
+    const steps = $$('[data-step]');
+    const scenes = $$('[data-scene]', handset);
+    const digits = $$('.digits b', handset);
+    const paired = $('.paired', handset);
+    const banner = $('.banner', handset);
+    const board = $('[data-board]', handset);
+    board.innerHTML = '<i></i>'.repeat(42);
+    const cells = $$('i', board);
+    // Red wins on a slant: bottom row, column 2, up to the fourth row, column 5.
+    const moves = [[2, 'r'], [3, 'y'], [3, 'r'], [4, 'y'], [5, 'r'], [4, 'y'], [4, 'r'], [5, 'y'], [6, 'r'], [5, 'y'], [5, 'r']];
+    let timers = [];
+    let at = 0;
+    let auto;
+    const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+    const plays = [
+      () => {
         digits.forEach((d) => d.classList.remove('typed'));
         paired.classList.remove('on');
-        digits.forEach((d, i) => setTimeout(() => d.classList.add('typed'), 400 + i * 260));
-        setTimeout(() => paired.classList.add('on'), 400 + digits.length * 260 + 250);
-      };
-      run();
-      if (!still) setInterval(run, 7000);
-    },
-    // The call coming in on a locked phone.
-    call(step) {
-      const banner = $('.banner', step);
-      const run = () => {
+        digits.forEach((d, i) => later(() => d.classList.add('typed'), 300 + i * 230));
+        later(() => paired.classList.add('on'), 300 + digits.length * 230 + 200);
+        return 4200;
+      },
+      () => {
         banner.classList.remove('on');
-        setTimeout(() => banner.classList.add('on'), 500);
-      };
-      run();
-      if (!still) setInterval(run, 6000);
-    },
-    // A quick game of four in a row; red wins on a slant.
-    drop(step) {
-      const board = $('[data-board]', step);
-      board.innerHTML = '<i></i>'.repeat(42);
-      const cells = $$('i', board);
-      const moves = [[2, 'r'], [3, 'y'], [3, 'r'], [4, 'y'], [5, 'r'], [4, 'y'], [4, 'r'], [5, 'y'], [6, 'r'], [5, 'y'], [5, 'r']];
-      const run = () => {
+        later(() => banner.classList.add('on'), 500);
+        return 3600;
+      },
+      () => {
         cells.forEach((c) => (c.className = ''));
         const height = Array(7).fill(0);
-        moves.forEach(([col, who], i) => {
-          setTimeout(() => {
-            const row = 5 - height[col]++;
-            const cell = cells[row * 7 + col];
-            cell.className = who;
-            requestAnimationFrame(() => requestAnimationFrame(() => cell.classList.add('in')));
-            if (i === moves.length - 1) {
-              // Bottom row, column 2, up to the fourth row, column 5: four on a slant.
-              setTimeout(() => [[5, 2], [4, 3], [3, 4], [2, 5]].forEach(([r, c]) => cells[r * 7 + c].classList.add('win')), 500);
-            }
-          }, 300 + i * 520);
-        });
-      };
-      run();
-      if (!still) setInterval(run, 300 + moves.length * 520 + 3200);
-    },
-  };
+        moves.forEach(([col, who], i) => later(() => {
+          const cell = cells[(5 - height[col]++) * 7 + col];
+          cell.className = who;
+          requestAnimationFrame(() => requestAnimationFrame(() => cell.classList.add('in')));
+          if (i === moves.length - 1) later(() => [[5, 2], [4, 3], [3, 4], [2, 5]].forEach(([r, c]) => cells[r * 7 + c].classList.add('win')), 450);
+        }, 300 + i * 380));
+        return 300 + moves.length * 380 + 2200;
+      },
+    ];
+    const show = (n, keepGoing = true) => {
+      timers.forEach(clearTimeout);
+      timers = [];
+      clearTimeout(auto);
+      at = n;
+      steps.forEach((s, i) => s.classList.toggle('on', i === n));
+      scenes.forEach((s, i) => s.classList.toggle('on', i === n));
+      const length = plays[n]();
+      if (keepGoing && !still) auto = setTimeout(() => show((n + 1) % 3), length);
+    };
+    steps.forEach((s, i) => $('button', s).addEventListener('click', () => show(i)));
+    const start = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { show(0); start.disconnect(); }
+    }, { threshold: 0.4 });
+    start.observe(handset);
+  }
 
   $$('.reveal').forEach((el) => seen.observe(el));
 
