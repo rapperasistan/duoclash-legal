@@ -34,7 +34,7 @@
       <span class="cap"><b>${g.title}</b><small>${g.kind}</small></span>
     </button>`).join('') + `
     <a class="poster soon" href="mailto:support@duoclash.app?subject=Game%20idea%20for%20Duo%20Clash">
-      <span><span class="plus">+</span><b>Your idea here</b><small>Tell us the game you want next</small></span>
+      <span><span class="plus"><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span><b>Your idea here</b><small>Tell us the game you want next</small></span>
     </a>`;
 
   $$('[data-filter]').forEach((btn) => {

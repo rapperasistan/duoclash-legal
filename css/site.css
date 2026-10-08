@@ -238,3 +238,10 @@ footer a:hover { color: var(--paper); }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal, .intro .fan .phone, .intro .fan .tag { opacity: 1 !important; translate: none !important; }
 }
+
+/* Lucide icons (lucide.dev, ISC licence), drawn inline */
+svg.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.chips svg.i { color: var(--yellow); }
+dialog.game .close { display: grid; place-items: center; }
+dialog.game .nav button { display: inline-flex; align-items: center; gap: 4px; }
+.poster.soon .plus svg.i { width: 18px; height: 18px; stroke-width: 2.6; }
