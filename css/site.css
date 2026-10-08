@@ -76,7 +76,7 @@ h2.display { font-size: clamp(40px, 5.6vw, 76px); margin: 0; }
 .top nav .get:hover { color: var(--ink); background: #ffd666; }
 
 /* Hero: a versus screen */
-.hero { padding: 56px 0 0; overflow: clip; }
+.hero { padding: 56px 0 40px; overflow: clip; }
 .hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 48px; align-items: center; }
 .hero h1 { font-size: clamp(54px, 7.4vw, 112px); margin: 16px 0 24px; }
 .hero h1 .line { display: block; overflow: hidden; padding-bottom: .04em; }
@@ -132,17 +132,6 @@ h2.display { font-size: clamp(40px, 5.6vw, 76px); margin: 0; }
   70% { opacity: 1; }
   100% { transform: translateY(-60px) scale(1); opacity: 0; }
 }
-
-/* Ticker */
-.ticker { margin-top: 64px; border-block: 1px solid var(--line); background: var(--ink-2); display: flex; overflow: hidden; }
-.ticker .tag { flex: none; display: flex; align-items: center; gap: 8px; padding: 0 18px; background: var(--yellow); color: var(--ink); font: 900 17px/1 var(--display); letter-spacing: .1em; z-index: 1; }
-.ticker .tag::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: blink 1.2s steps(2, start) infinite; }
-@keyframes blink { to { visibility: hidden; } }
-.ticker .run { display: flex; width: max-content; animation: run 60s linear infinite; }
-.ticker:hover .run { animation-play-state: paused; }
-.ticker .run span { white-space: nowrap; padding: 15px 0; font: 700 21px/1 var(--display); letter-spacing: .06em; }
-.ticker .run span::after { content: "/"; color: var(--mute); margin: 0 22px; }
-@keyframes run { to { transform: translateX(-50%); } }
 
 /* Sections */
 section { padding: 130px 0; }

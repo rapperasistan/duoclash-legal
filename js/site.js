@@ -13,13 +13,6 @@
   addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  // The ticker: every game, twice over so the loop never shows a seam.
-  const ticker = $('[data-ticker]');
-  if (ticker) {
-    const names = games.map((g) => `<span>${g.title}</span>`).join('');
-    ticker.innerHTML = names + names;
-  }
-
   // The versus screen: a few moments from a night of games, one after another.
   const scenes = [
     { game: 'Guess the Celebrity', round: 'Round 5 · first to 3', her: 'her-1', him: 'him-2', score: [2, 2], pop: ['her', '😂'] },
