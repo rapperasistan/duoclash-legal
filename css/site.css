@@ -285,4 +285,15 @@ dialog.game .nav button { display: inline-flex; align-items: center; gap: 4px; }
 @media (prefers-reduced-motion: reduce) {
   .title.reveal .ico, .title.reveal h2, .steps .shot, .poster.rv { transform: none !important; clip-path: none !important; opacity: 1 !important; translate: none !important; scale: none !important; }
 }
-@media (min-width: 981px) { .strip { scroll-snap-type: none; } }
+
+
+/* The strip: drag with the mouse, arrows beside the title */
+.strip { cursor: grab; user-select: none; -webkit-user-select: none; scroll-snap-type: none; }
+.strip.dragging { cursor: grabbing; }
+.strip img { pointer-events: none; }
+.strip-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+.arrows { display: flex; gap: 8px; }
+.arrows button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--ink-2); cursor: pointer; display: grid; place-items: center; transition: background .2s, opacity .2s, transform .2s var(--ease); }
+.arrows button:hover:not(:disabled) { background: var(--ink-3); transform: scale(1.06); }
+.arrows button:disabled { opacity: .35; cursor: default; }
+.arrows svg.i { width: 18px; height: 18px; }

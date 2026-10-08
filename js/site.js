@@ -24,16 +24,67 @@
     if (y < innerHeight * 1.2) {
       [-0.16, -0.06, -0.24].forEach((k, i) => phones[i] && phones[i].style.setProperty('--p', `${(y * k).toFixed(1)}px`));
     }
-    if (strip && innerWidth > 980) {
-      const box = strip.getBoundingClientRect();
-      const p = clamp((innerHeight - box.top) / (innerHeight + box.height), 0, 1);
-      strip.scrollLeft = p * (strip.scrollWidth - strip.clientWidth);
-    }
   };
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', onScroll);
   frame();
+
+  // The strip of screens: drag it with the mouse (it carries on a little when let go), or use the arrows.
+  if (strip) {
+    let down = false, startX = 0, startLeft = 0, lastX = 0, lastT = 0, speed = 0, moved = false;
+    strip.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      down = true; moved = false; startX = lastX = e.clientX; startLeft = strip.scrollLeft; lastT = performance.now(); speed = 0;
+      strip.classList.add('dragging');
+    });
+    addEventListener('pointermove', (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) moved = true;
+      strip.scrollLeft = startLeft - dx;
+      const now = performance.now();
+      speed = (e.clientX - lastX) / Math.max(1, now - lastT);
+      lastX = e.clientX; lastT = now;
+    });
+    addEventListener('pointerup', () => {
+      if (!down) return;
+      down = false;
+      strip.classList.remove('dragging');
+      if (still) return;
+      let v = speed * 16;
+      const glide = () => {
+        if (Math.abs(v) < 0.3) return;
+        strip.scrollLeft -= v;
+        v *= 0.94;
+        requestAnimationFrame(glide);
+      };
+      requestAnimationFrame(glide);
+    });
+    strip.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
+    strip.addEventListener('dragstart', (e) => e.preventDefault());
+    $$('[data-strip]').forEach((b) => b.addEventListener('click', () => {
+      const max = strip.scrollWidth - strip.clientWidth;
+      const from = strip.scrollLeft;
+      const to = clamp(from + Number(b.dataset.strip) * strip.clientWidth * 0.8, 0, max);
+      if (still) { strip.scrollLeft = to; return; }
+      const t0 = performance.now();
+      const ease = (t) => 1 - Math.pow(1 - t, 4);
+      const go = (now) => {
+        const t = Math.min(1, (now - t0) / 650);
+        strip.scrollLeft = from + (to - from) * ease(t);
+        if (t < 1) requestAnimationFrame(go);
+      };
+      requestAnimationFrame(go);
+    }));
+    const arrows = () => {
+      const max = strip.scrollWidth - strip.clientWidth - 2;
+      $$('[data-strip]').forEach((b) => (b.disabled = Number(b.dataset.strip) < 0 ? strip.scrollLeft <= 2 : strip.scrollLeft >= max));
+    };
+    strip.addEventListener('scroll', arrows, { passive: true });
+    addEventListener('resize', arrows);
+    arrows();
+  }
 
   // The hero leans toward the pointer.
   const hero = $('.hero');
