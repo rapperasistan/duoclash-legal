@@ -44,7 +44,7 @@ export async function call(method, path, body) {
   try {
     response = await fetch(`${BASE}/${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
   } catch {
-    throw new Failure('Can’t reach Duo Clash. Check your connection.', 'offline', 0);
+    throw new Failure('Can’t reach CoupleClash. Check your connection.', 'offline', 0);
   }
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Failure(data.error || 'Something went wrong. Try again.', data.code, response.status);

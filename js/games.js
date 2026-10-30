@@ -1,4 +1,4 @@
-// Every game in Duo Clash, from the app (Multimobile/UI/Games.swift). Art in assets/games.
+// Every game in CoupleClash, from the app (Multimobile/UI/Games.swift). Art in assets/games.
 window.GAMES = [
  {
   "id": "letterLink",

@@ -1,4 +1,4 @@
-// Duo Clash on the web: the same accounts, couples, rooms and video call as the iPhone app, so a
+// CoupleClash on the web: the same accounts, couples, rooms and video call as the iPhone app, so a
 // couple can play with one on a laptop or an Android phone and the other on an iPhone.
 //   welcome: a name and a face, and the account is made (no email, no password, like the app)
 //   pair:    your code to give, or theirs to type; duoclash.app/play/#pair/123456 pairs straight away
@@ -95,7 +95,7 @@ async function boot() {
 function offline(error) {
   show('welcome', `<section class="center"><div class="card narrow">
     <div class="glyph">${icon('wifiOff')}</div>
-    <h1>Can’t reach Duo Clash</h1>
+    <h1>Can’t reach CoupleClash</h1>
     <p class="dim">${esc(error.message)}</p>
     <button class="primary" data-retry>Try again</button>
   </div></section>`);
@@ -125,7 +125,7 @@ function welcome() {
   show('welcome', `<section class="center"><form class="card narrow" data-welcome>
     <img class="logo" src="../assets/icon-512.png" alt="" width="72" height="72">
     <h1>Play face to face</h1>
-    <p class="dim">Duo Clash in your browser. Pick a name and a face, pair with your person, and play on a video call. They can be on a laptop, an Android phone or the iPhone app.</p>
+    <p class="dim">CoupleClash in your browser. Pick a name and a face, pair with your person, and play on a video call. They can be on a laptop, an Android phone or the iPhone app.</p>
     <label class="field"><span>Your name</span><input name="name" maxlength="20" autocomplete="nickname" placeholder="Leo" required></label>
     <div class="field"><span>Your face</span><div class="avatars">${Array.from({ length: AVATARS }, (_, i) => `
       <button type="button" class="avatar ${i === avatar ? 'on' : ''}" data-avatar="${i}" aria-label="Face ${i + 1}">${avatarSVG(i)}</button>`).join('')}
@@ -190,7 +190,7 @@ async function pair() {
       <p class="eyebrow">${icon('link')} Your code</p>
       <h1>Send this to your person</h1>
       <div class="code" aria-label="Your code ${code}">${[...code].map((d) => `<span>${d}</span>`).join('')}</div>
-      <p class="dim">They type it in Duo Clash on their iPhone, or open your link in any browser.</p>
+      <p class="dim">They type it in CoupleClash on their iPhone, or open your link in any browser.</p>
       <div class="row">
         <button class="primary" data-copy>${icon('copy')} Copy link</button>
         ${navigator.share ? `<button class="ghost" data-share>Share</button>` : ''}
@@ -212,7 +212,7 @@ async function pair() {
       toast(link);
     }
   };
-  $('[data-share]')?.addEventListener('click', () => navigator.share({ title: 'Duo Clash', text: `Pair with me on Duo Clash: ${code}`, url: link }).catch(() => {}));
+  $('[data-share]')?.addEventListener('click', () => navigator.share({ title: 'CoupleClash', text: `Pair with me on CoupleClash: ${code}`, url: link }).catch(() => {}));
   const form = $('[data-join]');
   form.code.addEventListener('input', () => (form.code.value = form.code.value.replace(/\D/g, '').slice(0, 6)));
   form.addEventListener('submit', async (event) => {
@@ -288,7 +288,7 @@ async function refreshCouple() {
     const fresh = (group.rooms ?? []).find((room) => !known.has(room.id) && room.host !== state.me.id && room.phase === 'lobby');
     if (fresh) {
       toast(`${partner()?.name} opened ${gameTitle(fresh.game)}. Join them.`);
-      document.title = `${partner()?.name} opened ${gameTitle(fresh.game)} · Duo Clash`;
+      document.title = `${partner()?.name} opened ${gameTitle(fresh.game)} · CoupleClash`;
     }
     if (app.dataset.view === 'home') renderCouple();
   } catch (error) {
@@ -607,5 +607,5 @@ $('#more').onclick = () => {
 };
 menu.addEventListener('click', (event) => event.target === menu && menu.close());
 
-addEventListener('focus', () => (document.title = 'Duo Clash · Play'));
+addEventListener('focus', () => (document.title = 'CoupleClash · Play'));
 boot();
